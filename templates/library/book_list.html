@@ -1,0 +1,21 @@
+{% load static %}
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Books</title>
+  </head>
+  <body>
+    <h1>Books</h1>
+    <p><a href="/books/new/">Add new book</a></p>
+    <ul>
+      {% for book in books %}
+        <li>
+          <a href="/books/{{ book.id }}/">{{ book.title }}</a> by {{ book.author }}
+        </li>
+      {% empty %}
+        <li>No books yet</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>

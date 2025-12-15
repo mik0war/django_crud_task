@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{ book.title }}</title>
+  </head>
+  <body>
+    <h1>{{ book.title }}</h1>
+    <p><strong>Author:</strong> {{ book.author }}</p>
+    <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+    <p><strong>Publication year:</strong> {{ book.publication_year }}</p>
+  <p><strong>Co-authors:</strong> {{ book.co_authors|default:"—" }}</p>
+
+  <p><strong>Genres:</strong> {{ book.genres|default:"—" }}</p>
+    <p><strong>Summary:</strong> {{ book.summary|default:"(no summary)" }}</p>
+
+    <h2>Edit</h2>
+    <form method="post" action="/books/{{ book.id }}/">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Save</button>
+    </form>
+
+    <h2>Delete</h2>
+    <form id="delete-form" method="post" action="/books/{{ book.id }}/?_method=delete">
+      {% csrf_token %}
+      <button type="submit">Delete</button>
+    </form>
+
+    <script>
+      // Support browsers that can't send DELETE; submit as POST with a query flag
+      document.getElementById('delete-form').addEventListener('submit', function(e){
+        e.preventDefault();
+        fetch(window.location.pathname, {method: 'DELETE', headers: {'X-CSRFToken': '{{ csrf_token }}'}})
+          .then(r => r.json())
+          .then(()=> window.location.href = '/books/')
+          .catch(()=> alert('Delete failed'));
+      });
+    </script>
+
+    <p><a href="/books/">Back to list</a></p>
+  </body>
+</html>
